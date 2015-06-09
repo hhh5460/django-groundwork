@@ -1,25 +1,33 @@
 # -------------------- #
+# project/urls.py file section #
+# -------------------- #
+
+PROJECT_URL_CONFIG = """
+"\nurlpatterns += [url(r'^%(app)s/', include('%(app)s.urls', namespace='%(app)s')),\n]\n"
+"""
+
+# -------------------- #
 # urls.py file section #
 # -------------------- #
 
 
 URL_IMPORTS = """
-from django.conf.urls.defaults import *
-from models import *
-from views import *
+from django.conf.urls import url
+from .models import *
+from .views import *
 
-urlpatterns = patterns('',
+urlpatterns =[
 """
 
 URL_CRUD_CONFIG = """
-    (r'%(model)s/create/$', create_%(model)s),
-    (r'%(model)s/list/$', list_%(model)s ),
-    (r'%(model)s/edit/(?P<id>[^/]+)/$', edit_%(model)s),
-    (r'%(model)s/view/(?P<id>[^/]+)/$', view_%(model)s),
+    url(r'^%(model)s/create/$', create_%(model)s, name='create_%(model)s'),
+    url(r'^%(model)s/list/$', list_%(model)s, name='list_%(model)s'),
+    url(r'^%(model)s/edit/(?P<id>[^/]+)/$', edit_%(model)s, name='edit_%(model)s'),
+    url(r'^%(model)s/view/(?P<id>[^/]+)/$', view_%(model)s, name='view_%(model)s'),
     """ 
 
 URL_END = """
-)
+]
 """
 
 
@@ -30,7 +38,7 @@ URL_END = """
 
 FORMS_IMPORTS = """
 from django import forms
-from models import *
+from .models import *
 
 """
 
@@ -40,7 +48,7 @@ class %(modelClass)sForm(forms.ModelForm):
 	
     class Meta:
         model = %(modelClass)s	
-        # exclude = [] # uncomment this line and specify any field to exclude it from the form
+        exclude = [] # uncomment this line and specify any field to exclude it from the form
 
     def __init__(self, *args, **kwargs):
         super(%(modelClass)sForm, self).__init__(*args, **kwargs)
@@ -67,8 +75,8 @@ from django.core.urlresolvers import reverse
 
 # app specific files
 
-from models import *
-from forms import *
+from .models import *
+from .forms import *
 """
 
 VIEWS_CREATE = """
@@ -148,6 +156,7 @@ TEMPLATES_CREATE = """
 {%% block title %%} %(modelClass)s - Create {%% endblock %%}
 
 {%% block heading %%}<h1>  %(modelClass)s - Create </h1>  {%% endblock %%}
+
 {%% block content %%} 
 <table>
 <form action="" method="POST"> {%% csrf_token %%}
@@ -163,7 +172,7 @@ TEMPLATES_CREATE = """
 TEMPLATES_LIST = """
 {%% extends "base.html" %%}
 
-{%% block title %%} <h1> %(modelClass)s </h1><h2> List </h2> {%% endblock %%}
+{%% block title %%}  %(modelClass)s -- List {%% endblock %%}
 
 {%% block heading %%} 
 <h1> %(modelClass)s</h1>
@@ -175,9 +184,9 @@ TEMPLATES_LIST = """
 <thead>
 <tr><th>Record</th><th colspan="3">Actions</th></tr>
 {%% for item in list_items.object_list %%}
-  <tr><td>  {{item}}</td> <td><a href="{%% url %(app)s.views.view_%(model)s item.id %%}">Show</a> </td> <td><a href="{%% url %(app)s.views.edit_%(model)s item.id %%}">Edit</a></tr>
+  <tr><td>  {{item}}</td> <td><a href="{%% url '%(app)s:view_%(model)s' item.id %%}">Show</a> </td> <td><a href="{%% url '%(app)s:edit_%(model)s' item.id %%}">Edit</a></tr>
 {%% endfor %%}
-<tr><td colspan="3"> <a href="{%% url %(app)s.views.create_%(model)s %%}">Add New</a></td></tr>
+<tr><td colspan="3"> <a href="{%% url '%(app)s:create_%(model)s' %%}">Add New</a></td></tr>
 </table>
 
 <div align="center">
@@ -230,11 +239,10 @@ TEMPLATES_VIEW = """
 """
 
 TEMPLATES_BASE = """
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
-
+<!DOCTYPE html>
+<html>
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+	<meta charset=UTF-8"/>
 	<meta name="description" content=""/>
 	<meta name="keywords" content="" />
 	<meta name="author" content="" />
