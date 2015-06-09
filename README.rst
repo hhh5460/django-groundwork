@@ -1,3 +1,7 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This fork is for django 1.8 and python 3.4, just enjoy it.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 This app does all the groundwork needed to get an app up and running..
 Usage:
 
